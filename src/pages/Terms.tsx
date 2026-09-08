@@ -10,5 +10,11 @@ export default function TermsPage() {
       <section><h2>6. Propiedad intelectual</h2><p>Las fotografías, diseños, textos y elementos de identidad de Bloomé son de uso exclusivo de la marca. No pueden ser reproducidos ni utilizados con fines comerciales sin autorización previa.</p></section>
       <section><h2>7. Contacto</h2><p>Para consultas sobre estos términos, pedidos o atención posterior a una compra, contáctanos por nuestro canal oficial de WhatsApp.</p></section>
     </article>
+    <footer>
+      <div><a className="wordmark" href="/" aria-label="Bloomé, inicio">Bloom<span>é</span><small>FLORES QUE HABLAN</small></a><p>Detalles hechos a mano para celebrar lo importante.</p></div>
+      <div><h3>Información</h3><a href="/privacidad">Política de privacidad</a><a href="/terminos">Términos y condiciones</a></div>
+      <div><h3>Hablemos</h3><a href="https://wa.me/51902586466" target="_blank" rel="noreferrer">WhatsApp</a><a href="https://instagram.com/bloome.floreriaa" target="_blank" rel="noreferrer">Instagram</a></div>
+      <p className="copyright">© {new Date().getFullYear()} Bloomé. Todos los derechos reservados.</p>
+    </footer>
   </main>;
 }
