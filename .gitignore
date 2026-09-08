@@ -34,6 +34,7 @@ yarn-error.log*
 /dist/
 /outputs/
 /work/
+*.tsbuildinfo
 
 # local builds and previous hosting setup
 /package-stage-*/
