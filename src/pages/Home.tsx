@@ -69,7 +69,7 @@ export default function Home() {
       </header>
 
       <section className="hero" id="inicio">
-        <div className="hero-copy"><p className="eyebrow">HECHO A MANO · CON INTENCIÓN</p><h1>Flores que dicen<br /><em>lo que sientes.</em></h1><p className="hero-text">Ramos artesanales de chenille, pensados para quedar en la memoria. Elige un diseño, personalízalo y nosotros nos encargamos del detalle.</p><a className="button button-dark" href="#catalogo">Ver colección <ArrowUpRight size={18} /></a></div>
+        <div className="hero-copy"><p className="eyebrow">FLORES ETERNAS · CON INTENCIÓN</p><h1>Flores que dicen<br /><em>lo que sientes.</em></h1><p className="hero-text">Ramos de flores eternas, pensados para quedarse en la memoria. Elige un diseño, personalízalo y nosotros nos encargamos del detalle.</p><a className="button button-dark" href="#catalogo">Ver colección <ArrowUpRight size={18} /></a></div>
         <div className="hero-visual"><div className="hero-ring" /><div className="hero-note"><span>01</span><p>Un detalle que<br />no se marchita.</p></div><img src="/ramo-peluche.png" alt="Ramo artesanal de rosas con peluche" /></div>
       </section>
 
