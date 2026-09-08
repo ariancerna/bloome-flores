@@ -2,9 +2,11 @@
 
 import { useState } from 'react';
 import { ArrowUpRight, MessageCircle, Minus, Plus, ShoppingBag, Trash2, X } from 'lucide-react';
+import '../styles/cart-details.css';
 
 type Product = { name: string; price: number; category: string; image: string; includes: string[] };
 type CartLine = Product & { quantity: number };
+type CartStep = 'cart' | 'details';
 
 const whatsapp = '51902586466';
 
@@ -49,6 +51,12 @@ export default function Home() {
   const [selected, setSelected] = useState<Product | null>(null);
   const [cartOpen, setCartOpen] = useState(false);
   const [cart, setCart] = useState<CartLine[]>([]);
+  const [cartStep, setCartStep] = useState<CartStep>('cart');
+  const [deliveryType, setDeliveryType] = useState<'delivery' | 'pickup'>('delivery');
+  const [deliveryDate, setDeliveryDate] = useState('');
+  const [deliveryZone, setDeliveryZone] = useState('');
+  const [deliveryReference, setDeliveryReference] = useState('');
+  const [dedication, setDedication] = useState('');
   const filters = ['Todos', 'Ramos buchón', 'Hot Wheels', 'Amarillito'];
   const visible = filter === 'Todos' ? products : products.filter((p) => p.category === filter);
   const itemCount = cart.reduce((total, line) => total + line.quantity, 0);
@@ -58,14 +66,17 @@ export default function Home() {
     return existing ? current.map((line) => line.name === product.name ? { ...line, quantity: line.quantity + 1 } : line) : [...current, { ...product, quantity: 1 }];
   });
   const updateQuantity = (name: string, quantity: number) => setCart((current) => quantity < 1 ? current.filter((line) => line.name !== name) : current.map((line) => line.name === name ? { ...line, quantity } : line));
-  const cartWhatsappUrl = `https://wa.me/${whatsapp}?text=${encodeURIComponent(`Hola, me gustaría hacer este pedido:\n\n${cart.map((line) => `• ${line.quantity} x ${line.name} — S/${line.price * line.quantity}`).join('\n')}\n\nTotal referencial: S/${subtotal}\n\n¿Me confirman disponibilidad y fecha de entrega?`)}`;
+  const openCart = () => { setCartStep('cart'); setCartOpen(true); };
+  const closeCart = () => { setCartStep('cart'); setCartOpen(false); };
+  const canConfirmOrder = Boolean(deliveryDate && (deliveryType === 'pickup' || deliveryZone.trim()));
+  const cartWhatsappUrl = `https://wa.me/${whatsapp}?text=${encodeURIComponent(`Hola, me gustaría hacer este pedido:\n\n${cart.map((line) => `• ${line.quantity} x ${line.name} — S/${line.price * line.quantity}`).join('\n')}\n\nTotal referencial: S/${subtotal}\n\nFecha deseada: ${deliveryDate}\nModalidad: ${deliveryType === 'delivery' ? 'Envío en Huaral' : 'Recojo'}${deliveryType === 'delivery' ? `\nZona o dirección: ${deliveryZone}\nReferencia: ${deliveryReference || 'Sin referencia'}` : ''}\nDedicatoria: ${dedication || 'Sin dedicatoria'}\n\n¿Me confirman disponibilidad?`)}`;
 
   return (
     <main>
       <header className="site-header">
         <a className="wordmark" href="#inicio" aria-label="Bloomé, inicio">Bloom<span>é</span><small>FLORES QUE HABLAN</small></a>
         <nav aria-label="Navegación principal"><a href="#catalogo">Catálogo</a><a href="#como-pedir">Cómo pedir</a><a href="#contacto">Contacto</a></nav>
-        <button className="cart-button" onClick={() => setCartOpen(true)} aria-label={`Ver carrito, ${itemCount} productos`}><ShoppingBag size={18} /> <span>Carrito</span>{itemCount > 0 && <b>{itemCount}</b>}</button>
+        <button className="cart-button" onClick={openCart} aria-label={`Ver carrito, ${itemCount} productos`}><ShoppingBag size={18} /> <span>Carrito</span>{itemCount > 0 && <b>{itemCount}</b>}</button>
       </header>
 
       <section className="hero" id="inicio">
@@ -90,8 +101,8 @@ export default function Home() {
 
       <a className="floating-whatsapp" href={`https://wa.me/${whatsapp}?text=${encodeURIComponent('Hola, me gustar\u00eda conocer m\u00e1s sobre los arreglos de Bloom\u00e9.')}`} target="_blank" rel="noreferrer" aria-label="Escribir a Bloom&eacute; por WhatsApp"><MessageCircle size={21} /><span>WhatsApp</span></a>
 
-      {selected && <div className="modal-backdrop" role="presentation" onMouseDown={() => setSelected(null)}><section className="product-modal" role="dialog" aria-modal="true" aria-labelledby="product-title" onMouseDown={(e) => e.stopPropagation()}><button className="modal-close" onClick={() => setSelected(null)} aria-label="Cerrar"><X size={20} /></button><div className="modal-image"><img src={selected.image} alt={selected.name} /></div><div className="modal-content"><p className="eyebrow">{selected.category}</p><h2 id="product-title">{selected.name}</h2><strong>S/{selected.price}</strong><h3>Incluye</h3><ul>{selected.includes.map((item) => <li key={item}>{item}</li>)}</ul><p className="modal-note">Imagen referencial. Los tonos y detalles pueden variar según disponibilidad.</p><button className="button button-whatsapp" onClick={() => { addToCart(selected); setSelected(null); setCartOpen(true); }}><ShoppingBag size={19} /> Agregar al carrito</button></div></section></div>}
-      {cartOpen && <div className="cart-backdrop" role="presentation" onMouseDown={() => setCartOpen(false)}><aside className="cart-panel" role="dialog" aria-modal="true" aria-labelledby="cart-title" onMouseDown={(e) => e.stopPropagation()}><div className="cart-head"><div><p className="eyebrow">TU PEDIDO</p><h2 id="cart-title">Carrito</h2></div><button className="modal-close" onClick={() => setCartOpen(false)} aria-label="Cerrar carrito"><X size={20} /></button></div>{cart.length === 0 ? <div className="cart-empty"><ShoppingBag size={32} /><p>Aún no agregaste arreglos.</p><button onClick={() => setCartOpen(false)}>Ver catálogo</button></div> : <><div className="cart-lines">{cart.map((line) => <article className="cart-line" key={line.name}><img src={line.image} alt="" /><div><h3>{line.name}</h3><p>S/{line.price} c/u</p><div className="quantity"><button onClick={() => updateQuantity(line.name, line.quantity - 1)} aria-label={`Quitar una unidad de ${line.name}`}><Minus size={14} /></button><span>{line.quantity}</span><button onClick={() => updateQuantity(line.name, line.quantity + 1)} aria-label={`Agregar una unidad de ${line.name}`}><Plus size={14} /></button></div></div><button className="remove-line" onClick={() => updateQuantity(line.name, 0)} aria-label={`Eliminar ${line.name}`}><Trash2 size={17} /></button></article>)}</div><div className="cart-total"><span>Total referencial</span><strong>S/{subtotal}</strong></div><a className="button button-whatsapp" href={cartWhatsappUrl} target="_blank" rel="noreferrer"><MessageCircle size={19} /> Confirmar por WhatsApp</a><p className="cart-note">El pago y la disponibilidad se confirman por WhatsApp.</p></>}</aside></div>}
+      {selected && <div className="modal-backdrop" role="presentation" onMouseDown={() => setSelected(null)}><section className="product-modal" role="dialog" aria-modal="true" aria-labelledby="product-title" onMouseDown={(e) => e.stopPropagation()}><button className="modal-close" onClick={() => setSelected(null)} aria-label="Cerrar"><X size={20} /></button><div className="modal-image"><img src={selected.image} alt={selected.name} /></div><div className="modal-content"><p className="eyebrow">{selected.category}</p><h2 id="product-title">{selected.name}</h2><strong>S/{selected.price}</strong><h3>Incluye</h3><ul>{selected.includes.map((item) => <li key={item}>{item}</li>)}</ul><p className="modal-note">Imagen referencial. Los tonos y detalles pueden variar según disponibilidad.</p><button className="button button-whatsapp" onClick={() => { addToCart(selected); setSelected(null); openCart(); }}><ShoppingBag size={19} /> Agregar al carrito</button></div></section></div>}
+      {cartOpen && <div className="cart-backdrop" role="presentation" onMouseDown={closeCart}><aside className="cart-panel" role="dialog" aria-modal="true" aria-labelledby="cart-title" onMouseDown={(e) => e.stopPropagation()}><div className="cart-head"><div><p className="eyebrow">TU PEDIDO</p><h2 id="cart-title">{cartStep === 'cart' ? 'Carrito' : 'Datos del pedido'}</h2></div><button className="modal-close" onClick={closeCart} aria-label="Cerrar carrito"><X size={20} /></button></div>{cart.length === 0 ? <div className="cart-empty"><ShoppingBag size={32} /><p>Aún no agregaste arreglos.</p><button onClick={closeCart}>Ver catálogo</button></div> : cartStep === 'cart' ? <><div className="cart-lines">{cart.map((line) => <article className="cart-line" key={line.name}><img src={line.image} alt="" /><div><h3>{line.name}</h3><p>S/{line.price} c/u</p><div className="quantity"><button onClick={() => updateQuantity(line.name, line.quantity - 1)} aria-label={`Quitar una unidad de ${line.name}`}><Minus size={14} /></button><span>{line.quantity}</span><button onClick={() => updateQuantity(line.name, line.quantity + 1)} aria-label={`Agregar una unidad de ${line.name}`}><Plus size={14} /></button></div></div><button className="remove-line" onClick={() => updateQuantity(line.name, 0)} aria-label={`Eliminar ${line.name}`}><Trash2 size={17} /></button></article>)}</div><div className="cart-total"><span>Total referencial</span><strong>S/{subtotal}</strong></div><button className="button button-whatsapp" onClick={() => setCartStep('details')}><MessageCircle size={19} /> Continuar</button><p className="cart-note">Completa unos datos antes de enviar tu pedido por WhatsApp.</p></> : <div className="cart-details"><p>Cuéntanos cómo prefieres recibir tu pedido.</p><label>Fecha deseada<input type="date" value={deliveryDate} onChange={(event) => setDeliveryDate(event.target.value)} required /></label><fieldset><legend>¿Cómo deseas recibirlo?</legend><label><input type="radio" name="delivery-type" checked={deliveryType === 'delivery'} onChange={() => setDeliveryType('delivery')} /> Envío en Huaral</label><label><input type="radio" name="delivery-type" checked={deliveryType === 'pickup'} onChange={() => setDeliveryType('pickup')} /> Recojo</label></fieldset>{deliveryType === 'delivery' && <><label>Zona o dirección en Huaral<input value={deliveryZone} onChange={(event) => setDeliveryZone(event.target.value)} placeholder="Ej. Urb. Los Olivos, calle..." required /></label><label>Referencia<input value={deliveryReference} onChange={(event) => setDeliveryReference(event.target.value)} placeholder="Ej. frente al parque" /></label></>}<label>Dedicatoria<textarea value={dedication} onChange={(event) => setDedication(event.target.value)} placeholder="Escribe tu mensaje (opcional)" rows={3} /></label><a className={`button button-whatsapp${canConfirmOrder ? '' : ' is-disabled'}`} href={canConfirmOrder ? cartWhatsappUrl : undefined} target="_blank" rel="noreferrer" aria-disabled={!canConfirmOrder}><MessageCircle size={19} /> Enviar por WhatsApp</a><button className="cart-back" onClick={() => setCartStep('cart')}>← Volver al carrito</button><p className="cart-note">El pago y la disponibilidad se confirman por WhatsApp.</p></div>}</aside></div>}
     </main>
   );
 }

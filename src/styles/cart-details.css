@@ -1,0 +1,11 @@
+.cart-details { display:grid; gap:19px; padding-top:27px; }
+.cart-details > p { color:var(--muted); font-size:.88rem; line-height:1.55; margin:0; }
+.cart-details label { display:grid; gap:8px; color:var(--ink); font-size:.72rem; font-weight:700; letter-spacing:.07em; text-transform:uppercase; }
+.cart-details input:not([type="radio"]), .cart-details textarea { width:100%; border:1px solid var(--line); border-radius:0; background:transparent; color:var(--ink); font:inherit; font-size:.9rem; font-weight:400; letter-spacing:0; text-transform:none; padding:12px; outline-color:var(--rose); }
+.cart-details textarea { resize:vertical; }
+.cart-details fieldset { border:0; padding:0; margin:0; display:grid; gap:11px; }
+.cart-details legend { color:var(--ink); font-size:.72rem; font-weight:700; letter-spacing:.07em; text-transform:uppercase; margin-bottom:10px; }
+.cart-details fieldset label { display:flex; align-items:center; gap:9px; font-size:.82rem; font-weight:400; letter-spacing:0; text-transform:none; cursor:pointer; }
+.cart-details input[type="radio"] { accent-color:var(--rose); }
+.button.is-disabled { opacity:.45; pointer-events:none; }
+.cart-back { width:max-content; border:0; border-bottom:1px solid var(--ink); padding:0 0 5px; background:transparent; color:var(--ink); cursor:pointer; font-size:.72rem; letter-spacing:.08em; text-transform:uppercase; }
