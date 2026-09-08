@@ -9,11 +9,11 @@ type CartLine = Product & { quantity: number };
 const whatsapp = '51902586466';
 
 const customArrangements = [
-  { image: '/personalizado-1.jpeg', name: 'Caja de aniversario', tone: 'Azul profundo' },
-  { image: '/personalizado-2.jpeg', name: 'Caja romántica', tone: 'Rojo intenso' },
-  { image: '/personalizado-3.jpeg', name: 'Detalle de cumpleaños', tone: 'Rosa pastel' },
-  { image: '/personalizado-4.jpeg', name: 'Sorpresa con globos', tone: 'Azul eléctrico' },
-  { image: '/personalizado-5.jpeg', name: 'Caja dulce', tone: 'Rosa suave' },
+  { image: '/caja-rosa-osito.jpeg', name: 'Caja rosa con osito', tone: 'Rosa suave' },
+  { image: '/caja-roja-hello-kitty.jpeg', name: 'Caja Hello Kitty', tone: 'Rojo intenso' },
+  { image: '/caja-aniversario-azul.jpeg', name: 'Caja de aniversario', tone: 'Azul profundo' },
+  { image: '/caja-cumple-conejo.jpeg', name: 'Caja de cumpleaños', tone: 'Rosa pastel' },
+  { image: '/caja-cumple-azul.jpeg', name: 'Caja personalizada', tone: 'Azul eléctrico' },
 ];
 
 const products: Product[] = [
