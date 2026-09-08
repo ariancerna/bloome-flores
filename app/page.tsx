@@ -7,6 +7,14 @@ type Product = { name: string; price: number; category: string; image: string; i
 
 const whatsapp = '51926215342';
 
+const customArrangements = [
+  { image: '/personalizado-1.jpeg', name: 'Caja de aniversario', tone: 'Azul profundo' },
+  { image: '/personalizado-2.jpeg', name: 'Caja romántica', tone: 'Rojo intenso' },
+  { image: '/personalizado-3.jpeg', name: 'Detalle de cumpleaños', tone: 'Rosa pastel' },
+  { image: '/personalizado-4.jpeg', name: 'Sorpresa con globos', tone: 'Azul eléctrico' },
+  { image: '/personalizado-5.jpeg', name: 'Caja dulce', tone: 'Rosa suave' },
+];
+
 const products: Product[] = [
   { name: 'Ramo de 13 rosas + peluche', price: 95, category: 'Ramos buchón', image: '/ramo-peluche.png', includes: ['7 rosas rosadas', '6 rosas blancas', '13 perlas decorativas', 'Listón con frase personalizado', 'Peluche Lotso dormilón', 'Tarjeta dedicatoria'] },
   { name: 'Ramo de 17 rosas', price: 75, category: 'Ramos buchón', image: '/ramo-17.png', includes: ['17 rosas rojo intenso', '17 perlas decorativas', 'Listón con frase personalizado', 'Corona pequeña', 'Tarjeta dedicatoria'] },
@@ -61,7 +69,11 @@ export default function Home() {
 
       <section className="process" id="como-pedir"><p className="eyebrow">SENCILLO Y PERSONAL</p><h2>Tu pedido, en tres pasos.</h2><div className="steps"><div><span>01</span><h3>Elige un arreglo</h3><p>Explora el catálogo y abre el detalle del diseño que te gusta.</p></div><div><span>02</span><h3>Escríbenos</h3><p>Cuéntanos la fecha, dedicatoria y cualquier toque que quieras sumar.</p></div><div><span>03</span><h3>Reserva tu fecha</h3><p>Separa tu pedido con el 50%. Coordinamos entrega o recojo contigo.</p></div></div></section>
 
-      <footer id="contacto"><div><a className="wordmark" href="#inicio">Bloom<span>é</span><small>FLORES QUE HABLAN</small></a><p>Detalles hechos a mano para celebrar lo importante.</p></div><div><h3>Información</h3><a href="/privacidad">Política de privacidad</a><a href="/terminos">Términos y condiciones</a></div><div><h3>Hablemos</h3><a href={`https://wa.me/${whatsapp}`} target="_blank" rel="noreferrer">WhatsApp</a><a href="https://instagram.com" target="_blank" rel="noreferrer">Instagram</a></div><p className="copyright">© {new Date().getFullYear()} Bloomé. Todos los derechos reservados.</p></footer>
+      <section className="custom-gallery"><div className="gallery-heading"><div><p className="eyebrow">HECHOS A TU MEDIDA</p><h2>Detalles que ya<br /><em>hicieron historia.</em></h2></div><p>Globos, dulces, peluches y colores elegidos para una persona especial. Cada caja puede convertirse en algo único.</p></div><div className="gallery-grid">{customArrangements.map((arrangement) => <figure key={arrangement.name}><img src={arrangement.image} alt={arrangement.name} /><figcaption><span>{arrangement.tone}</span><strong>{arrangement.name}</strong></figcaption></figure>)}</div></section>
+
+      <section className="contact" id="contacto"><div><p className="eyebrow">CONTACTO</p><h2>Cuéntanos<br /><em>tu idea.</em></h2></div><div className="contact-copy"><p>Escríbenos por WhatsApp y crearemos un detalle para esa fecha especial.</p><a className="button button-dark" href={`https://wa.me/${whatsapp}?text=${encodeURIComponent('Hola, me gustaría cotizar un arreglo personalizado.')}`} target="_blank" rel="noreferrer"><MessageCircle size={19} /> Hablar por WhatsApp</a><a className="instagram-link" href="https://instagram.com/jasoriaflowers" target="_blank" rel="noreferrer">Síguenos en Instagram <ArrowUpRight size={16} /></a></div></section>
+
+      <footer><div><a className="wordmark" href="#inicio">Bloom<span>é</span><small>FLORES QUE HABLAN</small></a><p>Detalles hechos a mano para celebrar lo importante.</p></div><div><h3>Información</h3><a href="/privacidad">Política de privacidad</a><a href="/terminos">Términos y condiciones</a></div><div><h3>Hablemos</h3><a href={`https://wa.me/${whatsapp}`} target="_blank" rel="noreferrer">WhatsApp</a><a href="https://instagram.com/jasoriaflowers" target="_blank" rel="noreferrer">Instagram</a></div><p className="copyright">© {new Date().getFullYear()} Bloomé. Todos los derechos reservados.</p></footer>
 
       {selected && <div className="modal-backdrop" role="presentation" onMouseDown={() => setSelected(null)}><section className="product-modal" role="dialog" aria-modal="true" aria-labelledby="product-title" onMouseDown={(e) => e.stopPropagation()}><button className="modal-close" onClick={() => setSelected(null)} aria-label="Cerrar"><X size={20} /></button><div className="modal-image"><img src={selected.image} alt={selected.name} /></div><div className="modal-content"><p className="eyebrow">{selected.category}</p><h2 id="product-title">{selected.name}</h2><strong>S/{selected.price}</strong><h3>Incluye</h3><ul>{selected.includes.map((item) => <li key={item}>{item}</li>)}</ul><p className="modal-note">Imagen referencial. Los tonos y detalles pueden variar según disponibilidad.</p><a className="button button-whatsapp" href={whatsappUrl(selected)} target="_blank" rel="noreferrer"><MessageCircle size={19} /> Quiero este arreglo</a></div></section></div>}
     </main>

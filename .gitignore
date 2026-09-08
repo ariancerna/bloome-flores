@@ -36,3 +36,8 @@ next-env.d.ts
 /.wrangler/
 /outputs/
 /work/
+
+# local builds and previous hosting setup
+/.openai/
+/package-stage-*/
+/site*.tar.gz

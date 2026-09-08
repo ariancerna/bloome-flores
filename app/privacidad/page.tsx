@@ -1,10 +1,6 @@
-import Link from 'next/link';
-
-export const metadata = { title: 'Política de privacidad | Bloomé' };
-
 export default function PrivacyPage() {
   return <main className="legal-page">
-    <header className="legal-header"><Link href="/" className="wordmark" aria-label="Bloomé, inicio">Bloom<span>é</span><small>FLORES QUE HABLAN</small></Link><Link href="/" className="back-link">← Volver a la tienda</Link></header>
+    <header className="legal-header"><a href="/" className="wordmark" aria-label="Bloomé, inicio">Bloom<span>é</span><small>FLORES QUE HABLAN</small></a><a href="/" className="back-link">← Volver a la tienda</a></header>
     <article className="legal-document"><p className="eyebrow">INFORMACIÓN LEGAL</p><h1>Política de<br /><em>privacidad</em></h1><p className="legal-intro">Tu información es parte de la confianza que depositas en nosotros. Aquí explicamos, de manera clara, cómo la usamos al atender tu pedido.</p><p className="legal-date">Última actualización: septiembre de 2026</p>
       <section><h2>1. Responsable del tratamiento</h2><p>Bloomé es responsable del tratamiento de los datos personales que nos compartes al comunicarte para realizar una compra. Antes de publicar esta política de manera definitiva, el negocio debe completar su nombre o razón social, RUC, domicilio y correo electrónico de contacto.</p></section>
       <section><h2>2. Datos que podemos solicitar</h2><p>Para gestionar un pedido, podemos solicitar tu nombre, número de teléfono, dirección o referencia de entrega, distrito, fecha de entrega, texto de dedicatoria y cualquier detalle necesario para personalizar el arreglo. No solicitamos información que no sea necesaria para atender tu compra.</p></section>
