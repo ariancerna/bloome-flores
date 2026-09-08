@@ -8,12 +8,12 @@ type CartLine = Product & { quantity: number };
 
 const whatsapp = '51902586466';
 
-const customArrangements = [
-  { image: '/caja-rosa-osito.jpeg', name: 'Caja rosa con osito', tone: 'Rosa suave' },
-  { image: '/caja-roja-hello-kitty.jpeg', name: 'Caja Hello Kitty', tone: 'Rojo intenso' },
-  { image: '/caja-aniversario-azul.jpeg', name: 'Caja de aniversario', tone: 'Azul profundo' },
-  { image: '/caja-cumple-conejo.jpeg', name: 'Caja de cumpleaños', tone: 'Rosa pastel' },
-  { image: '/caja-cumple-azul.jpeg', name: 'Caja personalizada', tone: 'Azul eléctrico' },
+const customArrangements: Array<Product & { tone: string }> = [
+  { image: '/caja-rosa-osito.jpeg', name: 'Caja rosa con osito', tone: 'Rosa suave', price: 65, category: 'Caja personalizada', includes: ['Flores eternas', 'Peluche', 'Dulces y globo decorativo'] },
+  { image: '/caja-roja-hello-kitty.jpeg', name: 'Caja Hello Kitty', tone: 'Rojo intenso', price: 65, category: 'Caja personalizada', includes: ['Flores eternas', 'Peluche Hello Kitty', 'Dulces y globo decorativo'] },
+  { image: '/caja-aniversario-azul.jpeg', name: 'Caja de aniversario', tone: 'Azul profundo', price: 65, category: 'Caja personalizada', includes: ['Flores eternas', 'Peluche', 'Dulces y globo de aniversario'] },
+  { image: '/caja-cumple-conejo.jpeg', name: 'Caja de cumpleaños', tone: 'Rosa pastel', price: 55, category: 'Caja personalizada', includes: ['Flores eternas', 'Peluche conejo', 'Dulces y globo de cumpleaños'] },
+  { image: '/caja-cumple-azul.jpeg', name: 'Caja personalizada', tone: 'Azul eléctrico', price: 95, category: 'Caja personalizada', includes: ['Flores eternas', 'Peluche', 'Dulces y globo personalizado'] },
 ];
 
 const products: Product[] = [
@@ -80,7 +80,7 @@ export default function Home() {
 
       <section className="process" id="como-pedir"><p className="eyebrow">SENCILLO Y PERSONAL</p><h2>Tu pedido, en tres pasos.</h2><div className="steps"><div><span>01</span><h3>Elige un arreglo</h3><p>Explora el catálogo y abre el detalle del diseño que te gusta.</p></div><div><span>02</span><h3>Escríbenos</h3><p>Cuéntanos la fecha, dedicatoria y cualquier toque que quieras sumar.</p></div><div><span>03</span><h3>Reserva tu fecha</h3><p>Separa tu pedido con el 50%. Coordinamos entrega o recojo contigo.</p></div></div></section>
 
-      <section className="custom-gallery"><div className="gallery-heading"><div><p className="eyebrow">HECHOS A TU MEDIDA</p><h2>Detalles que ya<br /><em>hicieron historia.</em></h2></div><p>Globos, dulces, peluches y colores elegidos para una persona especial. Cada caja puede convertirse en algo único.</p></div><div className="gallery-grid">{customArrangements.map((arrangement) => <figure key={arrangement.name}><img src={arrangement.image} alt={arrangement.name} /><figcaption><span>{arrangement.tone}</span><strong>{arrangement.name}</strong></figcaption></figure>)}</div></section>
+      <section className="custom-gallery"><div className="gallery-heading"><div><p className="eyebrow">HECHOS A TU MEDIDA</p><h2>Detalles que ya<br /><em>hicieron historia.</em></h2></div><p>Globos, dulces, peluches y colores elegidos para una persona especial. Cada caja puede convertirse en algo único.</p></div><div className="gallery-grid">{customArrangements.map((arrangement) => <figure key={arrangement.name}><button className="gallery-image" onClick={() => setSelected(arrangement)} aria-label={`Ver ${arrangement.name}`}><img src={arrangement.image} alt={arrangement.name} /></button><figcaption><span>{arrangement.tone}</span><div className="gallery-product"><strong>{arrangement.name}</strong><b>S/{arrangement.price}</b></div><button className="gallery-add" onClick={() => addToCart(arrangement)}><Plus size={14} /> Agregar al carrito</button></figcaption></figure>)}</div></section>
 
       <section className="contact" id="contacto"><div><p className="eyebrow">CONTACTO</p><h2>Cuéntanos<br /><em>tu idea.</em></h2></div><div className="contact-copy"><p>Escríbenos por WhatsApp y crearemos un detalle para esa fecha especial.</p><a className="button button-dark" href={`https://wa.me/${whatsapp}?text=${encodeURIComponent('Hola, me gustaría cotizar un arreglo personalizado.')}`} target="_blank" rel="noreferrer"><MessageCircle size={19} /> Hablar por WhatsApp</a><a className="instagram-link" href="https://instagram.com/bloome.floreriaa" target="_blank" rel="noreferrer">Síguenos en Instagram <ArrowUpRight size={16} /></a></div></section>
 
