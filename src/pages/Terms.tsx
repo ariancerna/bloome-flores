@@ -1,6 +1,9 @@
+import Footer from '../components/Footer';
+import LegalHeader from '../components/LegalHeader';
+
 export default function TermsPage() {
   return <main className="legal-page">
-    <header className="legal-header"><a href="/" className="wordmark" aria-label="Bloomé, inicio">Bloom<span>é</span><small>FLORES QUE HABLAN</small></a><a href="/" className="back-link">← Volver a la tienda</a></header>
+    <LegalHeader />
     <article className="legal-document"><p className="eyebrow">INFORMACIÓN LEGAL</p><h1>Términos y<br /><em>condiciones</em></h1><p className="legal-intro">Estos términos establecen cómo trabajamos cada pedido para que tu detalle llegue con la atención que merece.</p><p className="legal-date">Última actualización: septiembre de 2026</p>
       <section><h2>1. Pedidos y disponibilidad</h2><p>Todos los arreglos Bloomé se elaboran a mano con flores eternas. Las fotografías son referenciales: pueden existir variaciones razonables de color, tono, material, envoltura o disposición sin que se afecte la esencia ni el valor del diseño. La disponibilidad de materiales se confirma al momento de atender el pedido.</p></section>
       <section><h2>2. Reserva y pagos</h2><p>Para reservar una fecha solicitamos un adelanto del 50% del valor del arreglo. El saldo debe cancelarse antes del envío o al momento del recojo, según lo coordinado. Los precios mostrados están expresados en soles (S/) y se confirman antes de iniciar la elaboración.</p></section>
@@ -10,11 +13,6 @@ export default function TermsPage() {
       <section><h2>6. Propiedad intelectual</h2><p>Las fotografías, diseños, textos y elementos de identidad de Bloomé son de uso exclusivo de la marca. No pueden ser reproducidos ni utilizados con fines comerciales sin autorización previa.</p></section>
       <section><h2>7. Contacto</h2><p>Para consultas sobre estos términos, pedidos o atención posterior a una compra, contáctanos por nuestro canal oficial de WhatsApp.</p></section>
     </article>
-    <footer>
-      <div><a className="wordmark" href="/" aria-label="Bloomé, inicio">Bloom<span>é</span><small>FLORES QUE HABLAN</small></a><p>Detalles hechos a mano para celebrar lo importante.</p></div>
-      <div><h3>Información</h3><a href="/privacidad">Política de privacidad</a><a href="/terminos">Términos y condiciones</a></div>
-      <div><h3>Hablemos</h3><a href="https://wa.me/51902586466" target="_blank" rel="noreferrer">WhatsApp</a><a href="https://instagram.com/bloome.floreriaa" target="_blank" rel="noreferrer">Instagram</a></div>
-      <p className="copyright">© {new Date().getFullYear()} Bloomé. Todos los derechos reservados.</p>
-    </footer>
+    <Footer />
   </main>;
 }

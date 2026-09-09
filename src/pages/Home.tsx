@@ -1,74 +1,52 @@
 'use client';
 
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { ArrowUpRight, MessageCircle, Minus, Plus, ShoppingBag, Trash2, X } from 'lucide-react';
+import { customArrangements as customArrangementCatalog, products as productCatalog } from '../data/products';
+import type { Product } from '../data/products';
+import { business } from '../data/business';
+import Footer from '../components/Footer';
+import { useCart } from '../hooks/useCart';
+import { useDialogA11y } from '../hooks/useDialogA11y';
 import '../styles/cart-details.css';
 
-type Product = { name: string; price: number; category: string; image: string; includes: string[] };
-type CartLine = Product & { quantity: number };
 type CartStep = 'cart' | 'details';
 
-const whatsapp = '51902586466';
+const { whatsapp, instagramUrl } = business;
 
-const customArrangements: Array<Product & { tone: string }> = [
-  { image: '/caja-rosa-osito.webp', name: 'Caja rosa con osito', tone: 'Rosa suave', price: 65, category: 'Caja personalizada', includes: ['Flores eternas', 'Peluche', 'Dulces y globo decorativo'] },
-  { image: '/caja-roja-hello-kitty.webp', name: 'Caja Hello Kitty', tone: 'Rojo intenso', price: 65, category: 'Caja personalizada', includes: ['Flores eternas', 'Peluche Hello Kitty', 'Dulces y globo decorativo'] },
-  { image: '/caja-aniversario-azul.webp', name: 'Caja de aniversario', tone: 'Azul profundo', price: 65, category: 'Caja personalizada', includes: ['Flores eternas', 'Peluche', 'Dulces y globo de aniversario'] },
-  { image: '/caja-cumple-conejo.webp', name: 'Caja de cumpleaños', tone: 'Rosa pastel', price: 55, category: 'Caja personalizada', includes: ['Flores eternas', 'Peluche conejo', 'Dulces y globo de cumpleaños'] },
-  { image: '/caja-cumple-azul.webp', name: 'Caja personalizada', tone: 'Azul eléctrico', price: 95, category: 'Caja personalizada', includes: ['Flores eternas', 'Peluche', 'Dulces y globo personalizado'] },
-];
+function formatDateForInput(date: Date) {
+  return [date.getFullYear(), String(date.getMonth() + 1).padStart(2, '0'), String(date.getDate()).padStart(2, '0')].join('-');
+}
 
-const products: Product[] = [
-  { name: 'Ramo de 13 rosas + peluche', price: 95, category: 'Ramos buchón', image: '/ramo-peluche.webp', includes: ['7 rosas rosadas', '6 rosas blancas', '13 perlas decorativas', 'Listón con frase personalizado', 'Peluche Lotso dormilón', 'Tarjeta dedicatoria'] },
-  { name: 'Ramo de 17 rosas', price: 75, category: 'Ramos buchón', image: '/ramo-17.webp', includes: ['17 rosas rojo intenso', '17 perlas decorativas', 'Listón con frase personalizado', 'Corona pequeña', 'Tarjeta dedicatoria'] },
-  { name: 'Ramo de 12 rosas rojas', price: 65, category: 'Ramos buchón', image: '/ramo-12.webp', includes: ['12 rosas rojas', '12 perlas decorativas', '2 mariposas medianas', 'Listón con frase personalizado', 'Corona pequeña', 'Tarjeta dedicatoria'] },
-  { name: 'Ramo de 20 rosas', price: 85, category: 'Ramos buchón', image: '/ramo-20.webp', includes: ['20 rosas rojas', '20 perlas decorativas', '2 mariposas', 'Corona mediana', 'Tarjeta dedicatoria'] },
-  { name: 'Ramo de 30 rosas', price: 150, category: 'Ramos buchón', image: '/ramo-30.webp', includes: ['30 rosas coral', '30 perlas decorativas', '2 mariposas grandes', 'Listón con frase personalizado', 'Corona mediana', 'Tarjeta dedicatoria'] },
-  { name: 'Ramo de 15 rosas', price: 70, category: 'Ramos buchón', image: '/ramo-20.webp', includes: ['15 rosas rojas', '15 perlas decorativas', '2 mariposas medianas', 'Listón con frase personalizado', '1 lazo', 'Tarjeta dedicatoria'] },
-  { name: 'Ramo de 8 rosas', price: 70, category: 'Ramos buchón', image: '/ramo-8.webp', includes: ['4 rosas pastel', '4 rosas blancas', '8 perlas decorativas', '1 corona mediana', '3 mariposas pequeñas', 'Tarjeta decorativa'] },
-  { name: 'Ramo de 50 rosas', price: 180, category: 'Ramos buchón', image: '/ramo-50.webp', includes: ['50 rosas rojas', '50 perlas decorativas', '4 mariposas grandes', 'Corona grande', 'Listón personalizado', 'Tarjeta dedicatoria'] },
-  { name: 'Ramo de 7 rosas', price: 60, category: 'Ramos buchón', image: '/ramo-7.webp', includes: ['4 rosas celestes', '3 rosas azules', 'Corona pequeña', '1 mariposa mediana', 'Listón con frase personalizado', 'Tarjeta decorativa'] },
-  { name: 'Ramo de 1 rosa', price: 12, category: 'Ramos buchón', image: '/ramo-1.webp', includes: ['1 rosa', '1 perla decorativa', 'Tarjeta personalizada'] },
-  { name: 'Ramo de 9 rosas', price: 75, category: 'Ramos buchón', image: '/ramo-9.webp', includes: ['9 rosas rosadas', '9 perlas decorativas', '2 mariposas grandes', 'Corona pequeña', 'Tarjeta dedicatoria'] },
-  { name: 'Ramo de 3 rosas', price: 35, category: 'Ramos buchón', image: '/ramo-3.webp', includes: ['3 rosas rosadas', '3 perlas decorativas', 'Lluvia decorativa', 'Tarjeta decorativa'] },
-  { name: 'Ramo Hot Wheels de 3 rosas', price: 45, category: 'Hot Wheels', image: '/hotwheels-3.webp', includes: ['3 rosas azules', '3 perlas decorativas', '2 carritos Hot Wheels a elección', '1 moño', 'Tarjeta dedicatoria'] },
-  { name: 'Ramo Hot Wheels de 1 rosa', price: 30, category: 'Hot Wheels', image: '/hotwheels-1.webp', includes: ['1 rosa azul', '1 carrito Hot Wheels', '1 mariposa pequeña', '1 perla decorativa', 'Tarjeta decorativa'] },
-  { name: 'Ramo Hot Wheels de 5 rosas', price: 60, category: 'Hot Wheels', image: '/hotwheels-5.webp', includes: ['5 rosas azules', '3 carros Hot Wheels', '2 chocolates', '1 moño decorativo', 'Tarjeta dedicatoria'] },
-  { name: 'Ramo Hot Wheels de 8 rosas + gorra', price: 140, category: 'Hot Wheels', image: '/hotwheels-8-gorra.webp', includes: ['8 rosas azules', '8 perlas decorativas', '4 carritos Hot Wheels', '1 gorra de preferencia', 'Tarjeta dedicatoria'] },
-  { name: 'Ramo Hot Wheels de 7 rosas + gorra', price: 120, category: 'Hot Wheels', image: '/hotwheels-7-gorra.webp', includes: ['7 rosas azules', '7 perlas decorativas', '2 carritos Hot Wheels', '1 gorra Jordan', 'Tarjeta dedicatoria'] },
-  { name: 'Box de 10 rosas + gorra', price: 95, category: 'Hot Wheels', image: '/box-gorra.webp', includes: ['5 rosas blancas', '5 rosas azules', '10 perlas decorativas', 'Caja decorativa', '1 gorra', 'Tarjeta dedicatoria'] },
-  { name: 'Ramo de 12 rosas amarillas', price: 85, category: 'Amarillito', image: '/ramo-amarillo-12.webp', includes: ['12 rosas amarillas', '12 perlas decorativas', 'Frase personalizada', '1 corona pequeña', '2 mariposas medianas', 'Tarjeta decorativa'] },
-  { name: 'Ramo de girasoles', price: 55, category: 'Amarillito', image: '/girasoles.webp', includes: ['6 girasoles', '1 mariposa grande', 'Tarjeta dedicatoria'] },
-  { name: 'Ramo Kitty de 3 rosas amarillas', price: 59, category: 'Amarillito', image: '/kitty-amarillo.webp', includes: ['3 rosas amarillas', '3 perlas decorativas', '1 mariposa grande', 'Tarjeta decorativa'] },
-];
-
-function whatsappUrl(product: Product) {
-  return `https://wa.me/${whatsapp}?text=${encodeURIComponent(`Hola, me gustaría comprar estas flores: ${product.name}.`)}`;
+function getMinimumDeliveryDate() {
+  const date = new Date();
+  date.setHours(0, 0, 0, 0);
+  date.setDate(date.getDate() + 2);
+  return formatDateForInput(date);
 }
 
 export default function Home() {
   const [filter, setFilter] = useState('Todos');
   const [selected, setSelected] = useState<Product | null>(null);
   const [cartOpen, setCartOpen] = useState(false);
-  const [cart, setCart] = useState<CartLine[]>([]);
+  const { cart, addToCart, updateQuantity } = useCart();
   const [cartStep, setCartStep] = useState<CartStep>('cart');
   const [deliveryType, setDeliveryType] = useState<'delivery' | 'pickup'>('delivery');
   const [deliveryDate, setDeliveryDate] = useState('');
   const [deliveryZone, setDeliveryZone] = useState('');
   const [deliveryReference, setDeliveryReference] = useState('');
   const [dedication, setDedication] = useState('');
+  const minimumDeliveryDate = getMinimumDeliveryDate();
   const filters = ['Todos', 'Ramos buchón', 'Hot Wheels', 'Amarillito'];
-  const visible = filter === 'Todos' ? products : products.filter((p) => p.category === filter);
+  const visible = filter === 'Todos' ? productCatalog : productCatalog.filter((p) => p.category === filter);
   const itemCount = cart.reduce((total, line) => total + line.quantity, 0);
   const subtotal = cart.reduce((total, line) => total + line.price * line.quantity, 0);
-  const addToCart = (product: Product) => setCart((current) => {
-    const existing = current.find((line) => line.name === product.name);
-    return existing ? current.map((line) => line.name === product.name ? { ...line, quantity: line.quantity + 1 } : line) : [...current, { ...product, quantity: 1 }];
-  });
-  const updateQuantity = (name: string, quantity: number) => setCart((current) => quantity < 1 ? current.filter((line) => line.name !== name) : current.map((line) => line.name === name ? { ...line, quantity } : line));
   const openCart = () => { setCartStep('cart'); setCartOpen(true); };
-  const closeCart = () => { setCartStep('cart'); setCartOpen(false); };
-  const canConfirmOrder = Boolean(deliveryDate && (deliveryType === 'pickup' || deliveryZone.trim()));
+  const closeCart = useCallback(() => { setCartStep('cart'); setCartOpen(false); }, []);
+  const closeSelected = useCallback(() => setSelected(null), []);
+  useDialogA11y(Boolean(selected), closeSelected, 'product-title');
+  useDialogA11y(cartOpen, closeCart, 'cart-title');
+  const canConfirmOrder = Boolean(deliveryDate >= minimumDeliveryDate && (deliveryType === 'pickup' || deliveryZone.trim()));
   const cartWhatsappUrl = `https://wa.me/${whatsapp}?text=${encodeURIComponent(`Hola, me gustaría hacer este pedido:\n\n${cart.map((line) => `• ${line.quantity} x ${line.name} — S/${line.price * line.quantity}`).join('\n')}\n\nTotal referencial: S/${subtotal}\n\nFecha deseada: ${deliveryDate}\nModalidad: ${deliveryType === 'delivery' ? 'Envío en Huaral' : 'Recojo'}${deliveryType === 'delivery' ? `\nZona o dirección: ${deliveryZone}\nReferencia: ${deliveryReference || 'Sin referencia'}` : ''}\nDedicatoria: ${dedication || 'Sin dedicatoria'}\n\n¿Me confirman disponibilidad?`)}`;
 
   return (
@@ -93,11 +71,11 @@ export default function Home() {
 
       <section className="process" id="como-pedir"><p className="eyebrow">SENCILLO Y PERSONAL</p><h2>Tu pedido, en tres pasos.</h2><div className="steps"><div><span>01</span><h3>Elige un arreglo</h3><p>Explora el catálogo y abre el detalle del diseño que te gusta.</p></div><div><span>02</span><h3>Escríbenos</h3><p>Cuéntanos la fecha, dedicatoria y cualquier toque que quieras sumar.</p></div><div><span>03</span><h3>Reserva tu fecha</h3><p>Separa tu pedido con el 50%. Coordinamos entrega o recojo contigo.</p></div></div></section>
 
-      <section className="custom-gallery"><div className="gallery-heading"><div><p className="eyebrow">HECHOS A TU MEDIDA</p><h2>Detalles que ya<br /><em>hicieron historia.</em></h2></div><p>Globos, dulces, peluches y colores elegidos para una persona especial. Cada caja puede convertirse en algo único.</p></div><div className="gallery-grid">{customArrangements.map((arrangement) => <figure key={arrangement.name}><button className="gallery-image" onClick={() => setSelected(arrangement)} aria-label={`Ver ${arrangement.name}`}><img src={arrangement.image} alt={arrangement.name} loading="lazy" decoding="async" /></button><figcaption><span>{arrangement.tone}</span><div className="gallery-product"><strong>{arrangement.name}</strong><b>S/{arrangement.price}</b></div><button className="gallery-add" onClick={() => addToCart(arrangement)}><Plus size={14} /> Agregar al carrito</button></figcaption></figure>)}</div></section>
+      <section className="custom-gallery"><div className="gallery-heading"><div><p className="eyebrow">HECHOS A TU MEDIDA</p><h2>Detalles que ya<br /><em>hicieron historia.</em></h2></div><p>Globos, dulces, peluches y colores elegidos para una persona especial. Cada caja puede convertirse en algo único.</p></div><div className="gallery-grid">{customArrangementCatalog.map((arrangement) => <figure key={arrangement.name}><button className="gallery-image" onClick={() => setSelected(arrangement)} aria-label={`Ver ${arrangement.name}`}><img src={arrangement.image} alt={arrangement.name} loading="lazy" decoding="async" /></button><figcaption><span>{arrangement.tone}</span><div className="gallery-product"><strong>{arrangement.name}</strong><b>S/{arrangement.price}</b></div><button className="gallery-add" onClick={() => addToCart(arrangement)}><Plus size={14} /> Agregar al carrito</button></figcaption></figure>)}</div></section>
 
-      <section className="contact" id="contacto"><div><p className="eyebrow">CONTACTO</p><h2>Cuéntanos<br /><em>tu idea.</em></h2></div><div className="contact-copy"><p>Escríbenos por WhatsApp y crearemos un detalle para esa fecha especial.</p><a className="button button-dark" href={`https://wa.me/${whatsapp}?text=${encodeURIComponent('Hola, me gustaría cotizar un arreglo personalizado.')}`} target="_blank" rel="noreferrer"><MessageCircle size={19} /> Hablar por WhatsApp</a><a className="instagram-link" href="https://instagram.com/bloome.floreriaa" target="_blank" rel="noreferrer">Síguenos en Instagram <ArrowUpRight size={16} /></a></div></section>
+      <section className="contact" id="contacto"><div><p className="eyebrow">CONTACTO</p><h2>Cuéntanos<br /><em>tu idea.</em></h2></div><div className="contact-copy"><p>Escríbenos por WhatsApp y crearemos un detalle para esa fecha especial.</p><a className="button button-dark" href={`https://wa.me/${whatsapp}?text=${encodeURIComponent('Hola, me gustaría cotizar un arreglo personalizado.')}`} target="_blank" rel="noreferrer"><MessageCircle size={19} /> Hablar por WhatsApp</a><a className="instagram-link" href={instagramUrl} target="_blank" rel="noreferrer">Síguenos en Instagram <ArrowUpRight size={16} /></a></div></section>
 
-      <footer><div><a className="wordmark" href="#inicio">Bloom<span>é</span><small>FLORES QUE HABLAN</small></a><p>Detalles hechos a mano para celebrar lo importante.</p></div><div><h3>Información</h3><a href="/privacidad">Política de privacidad</a><a href="/terminos">Términos y condiciones</a></div><div><h3>Hablemos</h3><a href={`https://wa.me/${whatsapp}`} target="_blank" rel="noreferrer">WhatsApp</a><a href="https://instagram.com/bloome.floreriaa" target="_blank" rel="noreferrer">Instagram</a></div><p className="copyright">© {new Date().getFullYear()} Bloomé. Todos los derechos reservados.</p></footer>
+      <Footer />
 
       <a className="floating-whatsapp" href={`https://wa.me/${whatsapp}?text=${encodeURIComponent('Hola, me gustar\u00eda conocer m\u00e1s sobre los arreglos de Bloom\u00e9.')}`} target="_blank" rel="noreferrer" aria-label="Escribir a Bloom&eacute; por WhatsApp"><MessageCircle size={21} /><span>WhatsApp</span></a>
 
